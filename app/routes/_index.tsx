@@ -1,9 +1,18 @@
-import type { V2_MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { Link } from "@remix-run/react";
+import { getUserId } from "~/libs/session.server";
 
 import { useOptionalUser } from "~/libs/utils";
 
 export const meta: V2_MetaFunction = () => [{ title: "Remix Notes" }];
+
+export const loader = async ({ request }: LoaderArgs) => {
+  const userId = await getUserId(request);
+  console.log({ userId });
+  if (!userId) return redirect("/login");
+  return json({});
+};
 
 export default function Index() {
   const user = useOptionalUser();
@@ -41,7 +50,7 @@ export default function Index() {
                 ) : (
                   <div className="space-y-4 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5 sm:space-y-0">
                     <Link
-                      to="/join"
+                      to="/register"
                       className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-blue-700 shadow-sm hover:bg-blue-50 sm:px-8"
                     >
                       Sign up
