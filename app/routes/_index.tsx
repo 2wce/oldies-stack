@@ -1,7 +1,7 @@
 import type { V2_MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 
-import { useOptionalUser } from "~/utils";
+import { useOptionalUser } from "~/libs/utils";
 
 export const meta: V2_MetaFunction = () => [{ title: "Remix Notes" }];
 
