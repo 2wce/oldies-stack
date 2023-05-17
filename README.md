@@ -1,11 +1,11 @@
-# Remix Blues Stack
+# Oldies Stack
 
-![The Remix Blues Stack](https://repository-images.githubusercontent.com/461012689/37d5bd8b-fa9c-4ab0-893c-f0a199d5012d)
+![The Remix Oldies Stack](https://repository-images.githubusercontent.com/461012689/37d5bd8b-fa9c-4ab0-893c-f0a199d5012d)
 
 Learn more about [Remix Stacks](https://remix.run/stacks).
 
 ```
-npx create-remix@latest --template remix-run/blues-stack
+npx create-remix@latest --template 2wce/oldies-stack
 ```
 
 ## What's in the stack
@@ -26,22 +26,7 @@ npx create-remix@latest --template remix-run/blues-stack
 
 Not a fan of bits of the stack? Fork it, change it, and use `npx create-remix --template your/repo`! Make it your own.
 
-## Quickstart
-
-Click this button to create a [Gitpod](https://gitpod.io) workspace with the project set up, Postgres started, and Fly pre-installed
-
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/remix-run/blues-stack/tree/main)
-
 ## Development
-
-- First run this stack's `remix.init` script and commit the changes it makes to your project.
-
-  ```sh
-  npx remix init
-  git init # if you haven't already
-  git add .
-  git commit -m "Initialize project"
-  ```
 
 - Start the Postgres Database in [Docker](https://www.docker.com/get-started):
 
@@ -82,9 +67,9 @@ If you'd prefer not to use Docker, you can also use Fly's Wireguard VPN to conne
 
 This is a pretty simple note-taking app, but it's a good example of how you can build a full stack app with Prisma and Remix. The main functionality is creating users, logging in and out, and creating and deleting notes.
 
-- creating users, and logging in and out [./app/models/user.server.ts](./app/models/user.server.ts)
-- user sessions, and verifying them [./app/session.server.ts](./app/session.server.ts)
-- creating, and deleting notes [./app/models/note.server.ts](./app/models/note.server.ts)
+- creating users, and logging in and out [./app/services/user.server.ts](./app/models/user.server.ts)
+- user sessions, and verifying them [./app/libs/session.server.ts](./app/session.server.ts)
+- creating, and deleting notes [./app/services/note.server.ts](./app/models/note.server.ts)
 
 ## Deployment
 
@@ -105,8 +90,8 @@ Prior to your first deployment, you'll need to do a few things:
 - Create two apps on Fly, one for staging and one for production:
 
   ```sh
-  fly apps create blues-stack-template
-  fly apps create blues-stack-template-staging
+  fly apps create oldies-stack-f33a
+  fly apps create oldies-stack-f33a-staging
   ```
 
   > **Note:** Once you've successfully created an app, double-check the `fly.toml` file to ensure that the `app` key is the name of the production app you created. This Stack [automatically appends a unique suffix at init](https://github.com/remix-run/blues-stack/blob/4c2f1af416b539187beb8126dd16f6bc38f47639/remix.init/index.js#L29) which may not match the apps you created on Fly. You will likely see [404 errors in your Github Actions CI logs](https://community.fly.io/t/404-failure-with-deployment-with-remix-blues-stack/4526/3) if you have this mismatch.
@@ -128,14 +113,14 @@ Prior to your first deployment, you'll need to do a few things:
 - Add a `SESSION_SECRET` to your fly app secrets, to do this you can run the following commands:
 
   ```sh
-  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app blues-stack-template
-  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app blues-stack-template-staging
+  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app oldies-stack-f33a
+  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app oldies-stack-f33a-staging
   ```
 
   > **Note:** When creating the staging secret, you may get a warning from the Fly CLI that looks like this:
   >
   > ```
-  > WARN app flag 'blues-stack-template-staging' does not match app name in config file 'blues-stack-template'
+  > WARN app flag 'oldies-stack-f33a-staging' does not match app name in config file 'oldies-stack-f33a'
   > ```
   >
   > This simply means that the current directory contains a config that references the production app we created in the first step. Ignore this warning and proceed to create the secret.
@@ -145,11 +130,11 @@ Prior to your first deployment, you'll need to do a few things:
 - Create a database for both your staging and production environments. Run the following:
 
   ```sh
-  fly postgres create --name blues-stack-template-db
-  fly postgres attach --app blues-stack-template blues-stack-template-db
+  fly postgres create --name oldies-stack-f33a-db
+  fly postgres attach --app oldies-stack-f33a oldies-stack-f33a-db
 
-  fly postgres create --name blues-stack-template-staging-db
-  fly postgres attach --app blues-stack-template-staging blues-stack-template-staging-db
+  fly postgres create --name oldies-stack-f33a-staging-db
+  fly postgres attach --app oldies-stack-f33a-staging oldies-stack-f33a-staging-db
   ```
 
   > **Note:** You'll get the same warning for the same reason when attaching the staging database that you did in the `fly set secret` step above. No worries. Proceed!
