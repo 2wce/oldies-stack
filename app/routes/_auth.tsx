@@ -1,39 +1,47 @@
 import type { V2_MetaFunction } from "@remix-run/node";
-import { Outlet } from "@remix-run/react";
-
+import { Link, Outlet, useLocation } from "@remix-run/react";
+import capitalize from "lodash/capitalize";
 import { Command } from "lucide-react";
+import { buttonVariants } from "~/components";
+import { cn } from "~/libs/utils";
 
 export const meta: V2_MetaFunction = () => [{ title: "Login" }];
 
 export default function LoginPage() {
+  let location = useLocation();
+
+  const resolvedPath = location.pathname.includes("login")
+    ? "register"
+    : "login";
+
   return (
     <>
-      <div className="md:hidden">
+      {/* <div className="md:hidden">
         <img
-          src="/examples/authentication-light.png"
+          src="/authentication-light.png"
           width={1280}
           height={843}
           alt="Authentication"
           className="block dark:hidden"
         />
         <img
-          src="/examples/authentication-dark.png"
+          src="/authentication-dark.png"
           width={1280}
           height={843}
           alt="Authentication"
           className="hidden dark:block"
         />
-      </div>
+      </div> */}
       <div className="container relative hidden h-full flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-        {/* <Link
-          to="/examples/authentication"
+        <Link
+          to={`/${resolvedPath}`}
           className={cn(
             buttonVariants({ variant: "ghost", size: "sm" }),
             "absolute right-4 top-4 md:right-8 md:top-8"
           )}
         >
-          Login
-        </Link> */}
+          {capitalize(resolvedPath)}
+        </Link>
         <div className="bg-muted relative hidden h-full flex-col p-10 text-white dark:border-r lg:flex">
           <div
             className="absolute inset-0 bg-cover"
