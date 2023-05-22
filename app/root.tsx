@@ -8,10 +8,13 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
 
-import { getUser } from "~/libs/session.server";
 import stylesheet from "~/tailwind.css";
+import { getThemeSession } from "./libs/theme.server";
+import { ThemeBody, ThemeHead, ThemeProvider, useTheme } from "./providers";
+import { cn } from "./libs/utils";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -19,24 +22,43 @@ export const links: LinksFunction = () => [
 ];
 
 export const loader = async ({ request }: LoaderArgs) => {
-  return json({ user: await getUser(request) });
+  const themeSession = await getThemeSession(request);
+
+  return json({
+    theme: themeSession.getTheme(),
+  });
 };
 
-export default function App() {
+function App() {
+  const data = useLoaderData<typeof loader>();
+  const [theme] = useTheme();
+
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className={cn("h-full", theme ?? "")}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
+        <ThemeHead ssrTheme={Boolean(data.theme)} />
       </head>
       <body className="h-full">
         <Outlet />
+        <ThemeBody ssrTheme={Boolean(data.theme)} />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
       </body>
     </html>
+  );
+}
+
+export default function AppWithProviders() {
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    <ThemeProvider specifiedTheme={data.theme}>
+      <App />
+    </ThemeProvider>
   );
 }
